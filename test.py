@@ -3,17 +3,11 @@ from time import time
 from mpmath import radians
 import tf
 
-import numpy as np
-from numpy import array
-from sympy import symbols, cos, sin, pi, simplify, sqrt, atan2
-from sympy.matrices import Matrix
-
-
 '''
 Format of test case is [ [[EE position],[EE orientation as quaternions]],[WC location],[joint angles]]
 You can generate additional test cases by setting up your kuka project and running `$ roslaunch kuka_arm forward_kinematics.launch`
 From here you can adjust the joint angles to find thetas, use the gripper to extract positions and orientation (in quaternion xyzw) and lastly use link 5
-to find the position of the wrist center. These newly generate test cases can be added to the test_cases dictionary
+to find the position of the wrist center. These newly generated test cases can be added to the test_cases dictionary.
 '''
 
 test_cases = {1:[[[2.16135,-1.42635,1.55109],
@@ -64,63 +58,23 @@ def test_code(test_case):
 
     req = Pose(comb)
     start_time = time()
-    ########################################################################################
-    ## Insert IK code here starting at: Define DH parameter symbols
     
-    ## YOUR CODE HERE!
-    ## Create symbols for joint variables
+    ########################################################################################
+    ## 
+
+    ## Insert IK code here!
     q1, q2, q3, q4, q5, q6, q7 = symbols('q1:8') # theta 1
     d1, d2, d3, d4, d5, d6, d7 = symbols('d1:8')
     a0, a1, a2, a3, a4, a5, a6 = symbols('a0:7')
     alpha0, alpha1, alpha2, alpha3, alpha4, alpha5, alpha6 = symbols('alpha0:7')
 
-    ##KUKA KR210
-    s = {alpha0:     0,  a0:      0,  d1:  0.75,  q1:       q1,
-	 alpha1: -pi/2.,  a1:   0.35,  d2:     0,  q2:  q2-pi/2.,
-         alpha2:     0,  a2:   1.25,  d3:     0,  q3:       q3,
-         alpha3: -pi/2.,  a3: -0.054,  d4:   1.5,  q4:       q4,
-	 alpha4:  pi/2.,  a4:      0,  d5:     0,  q5:       q5,
- 	 alpha5: -pi/2.,  a5:      0,  d6:     0,  q6:       q6,
-   	 alpha6:     0,  a6:      0,  d7: 0.303,  q7:        0}
-
-    ##Homogeneous Transforms
-    """
-    T0_1 = Matrix([[             cos(q1),            -sin(q1),            0,              a0],
-		   [ sin(q1)*cos(alpha0), cos(q1)*cos(alpha0), -sin(alpha0), -sin(alpha0)*d1],
-		   [ sin(q1)*sin(alpha0), cos(q1)*sin(alpha0),  cos(alpha0),  cos(alpha0)*d1],
-		   [                   0,                   0,            0,               1]])
-    T0_1 = T0_1.subs(s)
-    T1_2 = Matrix([[             cos(q2),            -sin(q2),            0,              a1],
-                   [ sin(q2)*cos(alpha1), cos(q2)*cos(alpha1), -sin(alpha1), -sin(alpha1)*d2],
-                   [ sin(q2)*sin(alpha1), cos(q2)*sin(alpha1),  cos(alpha1),  cos(alpha1)*d2],
-                   [                   0,                   0,            0,               1]])
-    T1_2 = T1_2.subs(s)
-    T2_3 = Matrix([[             cos(q3),            -sin(q3),            0,              a2],
-                   [ sin(q3)*cos(alpha2), cos(q3)*cos(alpha2), -sin(alpha2), -sin(alpha2)*d3],
-                   [ sin(q3)*sin(alpha2), cos(q3)*sin(alpha2),  cos(alpha2),  cos(alpha2)*d3],
-                   [                   0,                   0,            0,               1]])
-    T2_3 = T2_3.subs(s)
-    T3_4 = Matrix([[             cos(q4),            -sin(q4),            0,              a3],
-                   [ sin(q4)*cos(alpha3), cos(q4)*cos(alpha3), -sin(alpha3), -sin(alpha3)*d4],
-                   [ sin(q4)*sin(alpha3), cos(q4)*sin(alpha3),  cos(alpha3),  cos(alpha3)*d4],
-                   [                   0,                   0,            0,               1]])
-    T3_4 = T3_4.subs(s)
-    T4_5 = Matrix([[             cos(q5),            -sin(q5),            0,              a4],
-                   [ sin(q5)*cos(alpha4), cos(q5)*cos(alpha4), -sin(alpha4), -sin(alpha4)*d5],
-                   [ sin(q5)*sin(alpha4), cos(q5)*sin(alpha4),  cos(alpha4),  cos(alpha4)*d5],
-                   [                   0,                   0,            0,               1]])
-    T4_5 = T4_5.subs(s)
-    T5_6 = Matrix([[             cos(q6),            -sin(q6),            0,              a5],
-                   [ sin(q6)*cos(alpha5), cos(q6)*cos(alpha5), -sin(alpha5), -sin(alpha5)*d6],
-                   [ sin(q6)*sin(alpha5), cos(q6)*sin(alpha5),  cos(alpha5),  cos(alpha5)*d6],
-                   [                   0,                   0,            0,               1]])
-    T5_6 = T5_6.subs(s)
-    T6_G = Matrix([[             cos(q7),            -sin(q7),            0,              a6],
-                   [ sin(q7)*cos(alpha6), cos(q7)*cos(alpha6), -sin(alpha6), -sin(alpha6)*d7],
-                   [ sin(q7)*sin(alpha6), cos(q7)*sin(alpha6),  cos(alpha6),  cos(alpha6)*d7],
-                   [                   0,                   0,            0,               1]])
-    T6_G = T6_G.subs(s)
-    """ 
+    s = {alpha0:      0,  a0:      0,  d1:  0.75,  q1:        q1,
+         alpha1: -pi/2.,  a1:   0.35,  d2:     0,  q2:  q2-pi/2.,
+         alpha2:      0,  a2:   1.25,  d3:     0,  q3:        q3,
+         alpha3: -pi/2.,  a3: -0.054,  d4:   1.5,  q4:        q4,
+         alpha4:  pi/2.,  a4:      0,  d5:     0,  q5:        q5,
+         alpha5: -pi/2.,  a5:      0,  d6:     0,  q6:        q6,
+         alpha6:      0,  a6:      0,  d7: 0.303,  q7:         0}
     def TF_Matrix(alpha, a, d, q):
         TF = Matrix([[            cos(q),           -sin(q),           0,             a],
                      [ sin(q)*cos(alpha), cos(q)*cos(alpha), -sin(alpha), -sin(alpha)*d],
@@ -135,53 +89,14 @@ def test_code(test_case):
     T4_5 = TF_Matrix(alpha4,a4,d5,q5).subs(s)
     T5_6 = TF_Matrix(alpha5,a5,d6,q6).subs(s)
     T6_G = TF_Matrix(alpha6,a6,d7,q7).subs(s)
-    print(simplify(T3_4*T4_5*T5_6))
-
-    ## Composition of Homogenious Transforms
-    #T0_2 = simplify(T0_1 * T1_2) # base_link to link_2
-    #T0_3 = simplify(T0_2 * T2_3) # base_link to link_3
-    #T0_4 = simplify(T0_3 * T3_4) # base_link to link_4
-    #T0_5 = simplify(T0_4 * T4_5) # base_link to link_5
-    #T0_6 = simplify(T0_5 * T5_6) # base_link to link_6
-    #T0_G = simplify(T0_6 * T6_G) # base_link to link_G
-    T0_G = T0_1 * T1_2 * T2_3 * T3_4 * T4_5 * T5_6 * T6_G
-
-    ## Correction needed to account for orientation difference between definition of 
-     # gripper  link on URDF vs DH Convention
-
-
-
-    ## Numerically evaluate transforms
-    #print("T0_1 = ",T0_1.evalf(subs={q1: 0, q2: 0, q3: 0, q4: 0, q5: 0, q6: 0}))
-    #print("T0_2 = ",T0_2.evalf(subs={q1: 0, q2: 0, q3: 0, q4: 0, q5: 0, q6: 0}))
-    #print("T0_3 = ",T0_3.evalf(subs={q1: 0, q2: 0, q3: 0, q4: 0, q5: 0, q6: 0}))
-    #print("T0_4 = ",T0_4.evalf(subs={q1: 0, q2: 0, q3: 0, q4: 0, q5: 0, q6: 0}))
-    #print("T0_5 = ",T0_5.evalf(subs={q1: 0, q2: 0, q3: 0, q4: 0, q5: 0, q6: 0}))
-    #print("T0_6 = ",T0_6.evalf(subs={q1: 0, q2: 0, q3: 0, q4: 0, q5: 0, q6: 0}))
-    #print("T0_G = ",T0_G.evalf(subs={q1: 0, q2: 0, q3: 0, q4: 0, q5: 0, q6: 0}))
-
-
-    ## Total Homogeneous Transform between base_link and gripper_link with 
-     # Orientation correction applied
-    #T_total = simplify(T0_G * R_corr)
-  
-
-    ## Calculate wrist center
-    EE_pos = Matrix([req.poses[x].position.x,
-		     req.poses[x].position.y,
- 	   	     req.poses[x].position.z])
-    #quaternion = (req.poses[x].orientation.x,
-    #              req.poses[x].orientation.y,
-    # 	 	  req.poses[x].orientation.z,
-    #		  req.poses[x].orientation.w)
-    #EE_orientation =  tf.transformations.euler_from_quaternion(quaternion)
-
+    
+    px = req.poses[x].position.x
+    py = req.poses[x].position.y
+    pz = req.poses[x].position.z
     (roll, pitch, yaw) = tf.transformations.euler_from_quaternion(
         [req.poses[x].orientation.x, req.poses[x].orientation.y,
             req.poses[x].orientation.z, req.poses[x].orientation.w]
     )
-
-
     r, p, y = symbols('r p y')
     X_rot = Matrix([[            1,           0,           0],
                     [            0,   cos(r),  -sin(r)],
@@ -193,38 +108,13 @@ def test_code(test_case):
                     [     sin(y),    cos(y),           0],
                     [            0,           0,           1]])
     rrpy = Z_rot * Y_rot * X_rot
-    #print("ROTEEEASDAS: ",otEE)    
-
-    #rotEE = Z_rot.subs(y, yaw) * Y_rot.subs(p, pitch) * X_rot.subs(r, roll)
-    #print("ROTEEEASDAS: ",rotEE)    
-
     rrpy = rrpy.subs({'r': roll, 'p': pitch, 'y': yaw})
     rotError = Z_rot.subs(y, radians(180)) * Y_rot.subs(p, radians(-90))
-
-    #EE_X_rot = X_rot.subs({roll: EE_orientation[0]})
-    #EE_Y_rot = Y_rot.subs({pitch: EE_orientation[1]})
-    #EE_Z_rot = Z_rot.subs({yaw: EE_orientation[2]})
-
-
-    #R_z = Z_rot.subs({yaw: np.pi})
-    #R_y = Y_rot.subs({pitch: -np.pi/2})
-    #R_corr = simplify(R_z * R_y)
-    #temp = rotEE
     rotEE = rrpy * rotError
-    
-
-    #rotEE = rotEE.subs({'r': roll, 'p': pitch, 'y': yaw})
-    print("rotEE",rotEE)
-    #T_total = T0_G*R_corr
-
-    #WC = EE_pos - .303 * rotEE[:,2]
-    w_x = EE_pos[0] - .303 * rotEE[0,2]
-    w_y = EE_pos[1] - .303 * rotEE[1,2]
-    w_z = EE_pos[2] - .303 * rotEE[2,2]
-    
-
-
-    theta1 = atan(w_y/w_x)
+    #
+    w_x = px - .303 * rotEE[0,2]
+    w_y = py - .303 * rotEE[1,2]
+    w_z = pz - .303 * rotEE[2,2]
 
     J2_WC_x = abs(sqrt(w_x**2 + w_y**2) - .35)
     J2_WC_y = abs(w_z - .75)
@@ -232,12 +122,13 @@ def test_code(test_case):
     A = 1.501
     B = sqrt(J2_WC_x**2 + J2_WC_y**2)
     C = 1.25
-
     a = acos((-A**2+B**2+C**2)/(2*B*C))
-    theta2 = atan(J2_WC_x/J2_WC_y) - a
     b = acos((A**2+C**2-B**2)/(2*A*C))
-    theta3 = np.pi/2-b-.036
-    print("theta1,2,3: ",theta1, theta2, theta3)
+
+    theta1 = atan(w_y/w_x)
+    theta2 = atan(J2_WC_x/J2_WC_y) - a
+    theta3 = pi/2-b-.036
+
     R0_3 = T0_1[0:3,0:3] * T1_2[0:3,0:3] * T2_3[0:3,0:3]
     R0_3 = R0_3.evalf(subs={
        q1: theta1,
@@ -246,40 +137,33 @@ def test_code(test_case):
     })
     
     R3_6 = R0_3.inv("LU") * rotEE
-
-    
-    
-    print("asdasfa", R0_3*R0_3.inv("LU"))
     theta4 = atan2(R3_6[2,2],-R3_6[0,2])
     theta5 = atan2(sqrt(R3_6[0,2]*R3_6[0,2] + R3_6[2,2]*R3_6[2,2]),R3_6[1,2])
     theta6 = atan2(-R3_6[1,1],R3_6[1,0])
-    print("theta4,5,6: ",theta4, theta5, theta6)
 
-    
-    ## Ending at: Populate response for the IK request
+    ## 
     ########################################################################################
+    
     ########################################################################################
     ## For additional debugging add your forward kinematics here. Use your previously calculated thetas
-    ## as the input and output the position of your end effector as your_ee = 
+    ## as the input and output the position of your end effector as your_ee = [x,y,z]
+
     ## (OPTIONAL) YOUR CODE HERE!
-    
-    
+    T0_G = T0_1 * T1_2 * T2_3 * T3_4 * T4_5 * T5_6 * T6_G
+    ee = T0_G.evalf(subs={q1: theta1,
+                        q2: theta2,
+                        q3: theta3,
+                        q4: theta4,
+                        q5: theta5,
+                        q6: theta6})
+
 
     ## End your code input for forward kinematics here!
     ########################################################################################
 
     ## For error analysis please set the following variables of your WC location and EE location in the format of [x,y,z]
     your_wc = [w_x,w_y,w_z] # <--- Load your calculated WC values in this array
-    ex = [-0.65,0.45,-0.36,0.95,0.79,0.49]
-    ee = T0_G.evalf(subs={q1: theta1,
-			q2: theta2,
-			q3: theta3,
-			q4: theta4,
-			q5: theta5,
-			q6: theta6})
-
     your_ee = [ee[0,3],ee[1,3],ee[2,3]] # <--- Load your calculated end effector value from your forward kinematics
-    
     ########################################################################################
 
     ## Error analysis
@@ -310,8 +194,8 @@ def test_code(test_case):
     print ("Theta 5 error is: %04.8f" % t_5_e)
     print ("Theta 6 error is: %04.8f" % t_6_e)
     print ("\n**These theta errors may not be a correct representation of your code, due to the fact \
-           \nthat the arm can have muliple posisiotns. It is best to add your forward kinmeatics to \
-           \nlook at the confirm wether your code is working or not**")
+           \nthat the arm can have muliple positions. It is best to add your forward kinmeatics to \
+           \nconfirm whether your code is working or not**")
     print (" ")
 
     # Find FK EE error
@@ -324,7 +208,7 @@ def test_code(test_case):
         print ("End effector error for y position is: %04.8f" % ee_y_e)
         print ("End effector error for z position is: %04.8f" % ee_z_e)
         print ("Overall end effector offset is: %04.8f units \n" % ee_offset)
-    
+
 
 
 
