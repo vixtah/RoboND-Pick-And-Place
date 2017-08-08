@@ -18,8 +18,8 @@
 [//]: # (Image References)
 
 [image1]: ./misc_images/kuka_diagram.jpg
-[image2]: ./misc_images/invKinematics.png
-[image3]: ./misc_images/invKinematics.png
+[image2]: ./misc_images/invKinematics.jpg
+[image3]: ./misc_images/invKinematics.jpg
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/972/view) Points
 ### Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
@@ -94,11 +94,12 @@ And here's another image!
 
 #### 1. Fill in the `IK_server.py` file with properly commented python code for calculating Inverse Kinematics based on previously performed Kinematic Analysis. Your code must guide the robot to successfully complete 8/10 pick and place cycles. Briefly discuss the code you implemented and your results. 
 
+I first derived the DH parameters and extracted the values from the urdf file. Using the DH parameters, I was able to derive the joint transformations and solve for the forward kinematics of the system.
 
-Here I'll talk about the code, what techniques I used, what worked and why, where the implementation might fail and how I might improve it if I were going to pursue this project further.  
+I was able to derive the angles for theta 1-3 by analysing the diagram using trigonometry. Theta 4-6 was a little harder to solve. I took R0_6 and multiplied the front by inverse(R0_3) and post multiplied by the R_corr to get R3_6. Then I printed out the syymbolic multiplication of R3_6 and used that to solve for theta 4-6. 
 
+The first thign i noticed was the wrist spinning wildly in the simulator which seemed to slow it down significantly. I used a conditional on theta5 to try to reduce the movement on theta 4 and 6. It seemed to help slightly. I realized that collisions would only happen at the beginning and the end of the path. So I hardcoded for the wrist to be bent back (-3pi/4) to somewhat minimize profile while traveling and increasing the simulation speed significantly. I also noticed that the gripper was not closing all the way before the next step was executing when using continue so I added a sleep after the gripper closing code.
 
-And just for fun, another example image:
-![alt text][image3]
+For the most part it successfully moves the objects to the trashbin from the shelf. However there is some strange behavior occasionally that I don't understand. Sometimes the gripper chooses to drop the block off at the very edge of the bin. It still works ore of the time, however I expect it should always drop it off right in the middle. 
 
-
+If i had more time, I would try to debug the dropoff phenomenon a bit more. I would also try to come up with a better algorithm to minimize movemnt for the wrist angles during travel.
