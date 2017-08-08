@@ -18,8 +18,8 @@
 [//]: # (Image References)
 
 [image1]: ./misc_images/kuka_diagram.jpg
-[image2]: ./misc_images/misc2.png
-[image3]: ./misc_images/misc3.png
+[image2]: ./misc_images/invKinematics.png
+[image3]: ./misc_images/invKinematics.png
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/972/view) Points
 ### Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
@@ -38,18 +38,57 @@ You're reading it!
 
 #### 2. Using the DH parameter table you derived earlier, create individual transformation matrices about each joint. In addition, also generate a generalized homogeneous transform between base_link and gripper_link using only end-effector(gripper) pose.
 
-Here's | A | Snappy | Table
+Ti_i+1|_|_|_
+---|---|---|---
+            cos(qi+1)|           -sin(qi+1)|            0|              ai+1
+ sin(qi+1)*cos(alphai)| cos(q)*cos(alphai)| -sin(alphai)| -sin(alphai)*di+1
+ sin(qi+1)*sin(alphai)| cos(q)*sin(alphai)|  cos(alphai)|  cos(alphai)*di+1
+                  0|                  0|            0|              1
+
+
+Homogeneous transform from Base to EE
+
+Rx | _ | _ | _
 --- | --- | --- | ---
-1 | `highlight` | **bold** | 7.41
-2 | a | b | c
-3 | *italic* | text | 403
-4 | 2 | 3 | abcd
+1 | 1 | 0 | 0
+0 | cos(roll) | -sin(roll) | 0 
+0 | sin(roll) | cos(roll) | 0
+0 | 0 | 0 | 1
+
+Ry | _ | _ | _
+--- | --- | --- | ---
+cos(pitch) | 1 | sin(pitch) | 0
+0 | 1 | 0 | 0 
+-sin(pitch) | 0 | cos(pitch) | 0
+0 | 0 | 0 | 1
+
+Rz | _ | _ | _
+--- | --- | --- | ---
+cos(yaw) | -sin(yaw) | 0 | 0
+sin(yaw) | cos(yaw) | 0 | 0 
+0 | 0 | 1 | 0
+0 | 0 | 0 | 1
+
+Pos | _ | _ | _
+--- | --- | --- | ---
+1 | 0 | 0 | px
+0 | 1 | 0 | py
+0 | 0 | 1 | pz
+0 | 0 | 0 | 1
+
+Where End effector pose:
+  position = (px,py,pz)
+  orientation = (roll, pitch, yaw)
+
+T0_G = Rz* Ry * Rx * Pos
 
 #### 3. Decouple Inverse Kinematics problem into Inverse Position Kinematics and inverse Orientation Kinematics; doing so derive the equations to calculate all individual joint angles.
 
 And here's another image! 
 
 ![alt text][image2]
+![alt text][image3]
+
 
 ### Project Implementation
 
