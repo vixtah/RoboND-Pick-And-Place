@@ -18,8 +18,8 @@
 [//]: # (Image References)
 
 [image1]: ./misc_images/kuka_diagram.jpg
-[image2]: ./misc_images/invKinematics.jpg
-[image3]: ./misc_images/invKinematics.jpg
+[image2]: ./misc_images/invKinematics.JPG
+[image3]: ./misc_images/invKinematics.JPG
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/972/view) Points
 ### Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
