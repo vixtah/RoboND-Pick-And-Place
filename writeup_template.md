@@ -40,10 +40,10 @@ You're reading it!
 
 Ti_i+1|_|_|_
 ---|---|---|---
-            cos(qi+1)|           -sin(qi+1)|            0|              ai+1
+         	 cos(qi+1)|         -sin(qi+1)|            0|              ai+1
  sin(qi+1)*cos(alphai)| cos(q)*cos(alphai)| -sin(alphai)| -sin(alphai)*di+1
  sin(qi+1)*sin(alphai)| cos(q)*sin(alphai)|  cos(alphai)|  cos(alphai)*di+1
-                  0|                  0|            0|              1
+             	     0|                  0|            0|            	  1
 
 
 Homogeneous transform from Base to EE
@@ -98,7 +98,7 @@ I first derived the DH parameters and extracted the values from the urdf file. U
 
 I was able to derive the angles for theta 1-3 by analysing the diagram using trigonometry. Theta 4-6 was a little harder to solve. I took R0_6 and multiplied the front by inverse(R0_3) and post multiplied by the R_corr to get R3_6. Then I printed out the syymbolic multiplication of R3_6 and used that to solve for theta 4-6. 
 
-The first thign i noticed was the wrist spinning wildly in the simulator which seemed to slow it down significantly. I used a conditional on theta5 to try to reduce the movement on theta 4 and 6. It seemed to help slightly. I realized that collisions would only happen at the beginning and the end of the path. So I hardcoded for the wrist to be bent back (-3pi/4) to somewhat minimize profile while traveling and increasing the simulation speed significantly. I also noticed that the gripper was not closing all the way before the next step was executing when using continue so I added a sleep after the gripper closing code.
+The first thign i noticed was the wrist spinning wildly in the simulator which seemed to slow it down significantly. I used a conditional on theta5 to try to reduce the movement on theta 4 and 6. It seemed to help slightly. I realized that collisions would only happen at the beginning and the end of the path. So I hardcoded for the wrist to be bent back (-pi/2) to somewhat minimize profile while traveling and increasing the simulation speed significantly. I also noticed that the gripper was not closing all the way before the next step was executing when using continue so I added a sleep after the gripper closing code.
 
 For the most part it successfully moves the objects to the trashbin from the shelf. However there is some strange behavior occasionally that I don't understand. Sometimes the gripper chooses to drop the block off at the very edge of the bin. It still works ore of the time, however I expect it should always drop it off right in the middle. 
 
